@@ -1,2 +1,2 @@
-# I2C-Emulator-C-
+# I2C-Emulator-cpp
 easier than in C
