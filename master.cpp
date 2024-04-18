@@ -1,8 +1,13 @@
 #include "slave.cpp"
 
-class master: public I2C{
+class master: public slave{
     public:
         int rec = 1;
+
+        master(vector<u8>& a): slave(a){
+
+        }
+
         void pull_down(){
             sda_send(0);
         }
@@ -17,11 +22,11 @@ class master: public I2C{
             sda_send(1);
         }
 
-        void inputstream(vector<byte> &bitstream){
+        void inputstream(vector<u8> &bitstream){
             pull_down();
         }
 
-        void send_data(byte bit){
+        void send_data(u8 bit){
             tick();
             sda_send(bit);
         }
