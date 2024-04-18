@@ -3,16 +3,18 @@
 class slave: public I2C{
     public:
         //registers
-        byte idx = 0;
-        byte drx = 0;
-        byte state = 1;
+        u8 idx = 0;
+        u8 drx = 0;
+        u8 rrx = 0;
+        u8 state = 1;
 
-        vector<byte> addr, received_addr, data;
-        byte received_data = 0;
-        byte rec = 1;
-        byte rw;
+        vector<u8> addr, received_addr, data;
 
-        slave(vector<byte> &a){
+        //bits
+        u8 rec = 1;
+        u8 rw;
+
+        slave(vector<u8> &a){
             addr.resize(ADDRSIZE);
             received_addr.resize(ADDRSIZE);
             data.resize(DATASIZE);
@@ -21,7 +23,7 @@ class slave: public I2C{
             }
         }
 
-        byte checkaddr(){
+        u8 checkaddr(){
             for(int i = 0; i<ADDRSIZE; i++){
                 if(addr[i]!=received_addr[i]){
                     return 0;
@@ -36,7 +38,7 @@ class slave: public I2C{
         }
 
         void receive(){
-            byte bit = SDA[WINDOW-1];
+            u8 bit = SDA[WINDOW-1];
             if(!rec) return;
             if(start){
                 if(state&(1<<0)){
@@ -64,23 +66,22 @@ class slave: public I2C{
                 else if(state&(1<<2)){
                     cout<<"state 3"<<endl;
                     data[idx] = bit;
-                    received_data = (received_data<<1) | static_cast<int>(bit);
+                    drx = (drx<<1) | static_cast<int>(bit);
                     int temp = (int)idx;
                     ++idx;
                     if(idx==DATASIZE){
                         idx = 0;
                         state<<=1;
-                        cout<<"data: "<<(int)received_data<<endl;
+                        cout<<"data: "<<(int)drx<<endl;
                         if(rw){
-                            drx = mem[received_data];
+                            rrx = EEPROM[drx];
                             cout<<"read data: "<<(int)drx<<endl;
                         }
                         else{
-                            mem[memptr] = received_data;
+                            EEPROM[memptr] = drx;
                             ++memptr;
-                            cout<<"wrote data: "<<(int)received_data<<" into mem location: "<<memptr-1<<endl;
+                            cout<<"wrote data: "<<(int)drx<<" into mem location: "<<memptr-1<<endl;
                         }
-                        
                     }
                 }
                 else if(state&(1<<3)){
