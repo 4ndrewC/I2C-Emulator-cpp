@@ -2,5 +2,5 @@ start condition
 bit 1-7: target address bits
 bit 8: read/write bit
 bit 9: acknowledgement bit
-bit 10-16: data bits
+bit 10-17: data bits
 stop condition
