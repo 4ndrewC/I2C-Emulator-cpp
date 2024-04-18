@@ -93,15 +93,14 @@ int main(){
         for(int j = 0; j<ADDRSIZE; j++) curbitstream[j] = targetaddr[j];
         curbitstream[RWLOC] = readwrite;
         u8 byte = (u8)sample_message.substr(i,1)[0];
-        //reverse because protocol is big endian
-        vector<u8> rev(DATASIZE);
-        for(int j = 0; j<DATASIZE; j++){
-            rev[j] = byte&1;
-            byte>>=1;
+        ///protocol is big endian
+        for(int j = DATALOC; j<DATALOC+DATASIZE; j++){
+            u8 bit = (byte&128)>>7;
+            curbitstream[j] = bit;
+            byte<<=1;
         }
-        for(int j = 0; j<DATASIZE; j++) curbitstream[DATALOC+DATASIZE-j-1] = rev[j];
         run(plc, master1, curbitstream);
-        received_message+= (char)master1.drx;
+        received_message += (char)master1.drx;
     }
     cout<<received_message<<endl;
 
