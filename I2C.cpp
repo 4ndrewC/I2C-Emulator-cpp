@@ -3,30 +3,28 @@
 
 using namespace std;
 
-#define byte uint8_t
+typedef uint8_t u8;
 
 #define pb push_back
 #define mp make_pair
-#define pbyte pair<byte, byte>
-#define vbyte vector<byte>
-#define vvbyte vector<vector<byte>>
 
-const static byte DATASIZE = 7;
-const static byte ADDRSIZE = 7;
-const static byte WINDOW = 10;
-const static byte MEMSIZE = 255;
-static vector<byte> mem(MEMSIZE);
-static byte memptr = 0;
+const static u8 DATASIZE = 8;
+const static u8 ADDRSIZE = 7;
+const static u8 RWLOC = ADDRSIZE;
+const static u8 DATALOC = RWLOC+1;
+const static u8 WINDOW = 10;
+const static u8 MEMSIZE = 255;
+static vector<u8> EEPROM(MEMSIZE);
+static u8 memptr = 0;
 
 class I2C{
     public:
-        // static byte state;
-        static byte start;
-        static byte stop;
+        static u8 start;
+        static u8 stop;
 
-        static vector<byte> SDA, SCL;
+        static vector<u8> SDA, SCL;
 
-        void sda_send(byte bit){
+        void sda_send(u8 bit){
             SDA.erase(SDA.begin());
             SDA.pb(bit);
         }
@@ -40,7 +38,6 @@ class I2C{
         void start_state(){
             start = 1;
             stop = 0;
-            // state = 1;
         }
 
         void stop_state(){
@@ -61,8 +58,7 @@ class I2C{
         }        
 };
 
-// byte I2C::state = 1;
-byte I2C::start = 0;
-byte I2C::stop = 1;
-vector<byte> I2C::SDA(WINDOW, 1);
-vector<byte> I2C::SCL(WINDOW, 1);
+u8 I2C::start = 0;
+u8 I2C::stop = 1;
+vector<u8> I2C::SDA(WINDOW, 1);
+vector<u8> I2C::SCL(WINDOW, 1);
